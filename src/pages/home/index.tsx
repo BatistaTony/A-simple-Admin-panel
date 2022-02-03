@@ -14,6 +14,7 @@ import {
   setFlashUser
 } from '../../store/reducers/users';
 import { ButtonCreate } from './styles';
+
 const Home = () => {
   const { users } = useSelector((state: RootState) => state.dashboard);
   const [userId, setUserId] = useState<number | null>(null);
@@ -59,7 +60,9 @@ const Home = () => {
         )}
       </CustomModal>
 
-      <ButtonCreate onClick={() => navigate('/create')}>Creat new user</ButtonCreate>
+      <ButtonCreate bg="#f72585" onClick={() => navigate('/create')}>
+        Creat new user
+      </ButtonCreate>
 
       {users.length <= 0 && (
         <CustomMessage>
@@ -70,7 +73,6 @@ const Home = () => {
       {users.length > 0 && (
         <CustomTable data={users} handleDelete={showModalDelete} handleEdit={handleOnEdit} />
       )}
-
     </PageLayout>
   );
 };

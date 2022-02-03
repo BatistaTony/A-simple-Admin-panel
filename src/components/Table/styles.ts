@@ -13,7 +13,7 @@ export const TableHeader = styled.div`
   width: 100%;
   height: 50px;
   display: grid;
-  grid-template-columns: 3% 15% 10% 20% 15% auto;
+  grid-template-columns: 3% 15% 10% 20% 15% auto auto;
 `;
 
 export const TableHeaderData = styled.h1`
@@ -51,15 +51,14 @@ const ButtonStyled = styled.button`
 `;
 
 interface CustomButtonProps {
-  color?: string;
+  bg?: string;
 }
 
 export const CustomButton = styled(ButtonStyled)<CustomButtonProps>`
-  background-color: ${({ color }) => (color ? color : 'blue')};
+  background-color: ${({ bg }) => (bg ? bg : 'blue')};
   height: 35px;
   padding-left: 20px;
   padding-right: 20px;
-  margin-left: 10px;
   font-family: Manrope;
   font-style: normal;
   font-weight: 500;
@@ -68,4 +67,5 @@ export const CustomButton = styled(ButtonStyled)<CustomButtonProps>`
   display: flex;
   align-items: center;
   color: #ffffff;
+  width:70%;
 `;
