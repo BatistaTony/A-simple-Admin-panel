@@ -17,7 +17,7 @@ function App() {
       dispatch(resetUsers());
     }
     dispatch(getUsers());
-  }, []);
+  }); 
 
   return (
     <BrowserRouter>
