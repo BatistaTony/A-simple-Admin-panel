@@ -1,64 +1,47 @@
-import React from 'react';
-import { Table, Button } from 'antd';
+import {
+  TableContainer,
+  TableHeader,
+  TableHeaderData,
+  TableRow,
+  TableRowData,
+  CustomButton
+} from './styles';
 import { User } from '../../types/user';
 
-const { Column } = Table;
-
 interface CustomTableProps {
+  data: User[];
   handleDelete: (id: number) => void;
   handleEdit: (id: number) => void;
-  data: User[]
 }
 
-const CustomTable = ({ handleDelete, handleEdit, data }: CustomTableProps) => {
-  
-
-  const columns = [
-    {
-      title: 'Id',
-      dataIndex: 'id',
-      key: 'id'
-    },
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name'
-    },
-    {
-      title: 'Username',
-      dataIndex: 'username',
-      key: 'username'
-    },
-    {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email'
-    }
-  ];
+const CustomTable = ({ data, handleDelete, handleEdit }: CustomTableProps) => {
+  const itemsHeader = ['id', 'Name', 'User name', 'email', 'city', ''];
 
   return (
-    <Table style={{ width: '100%' }} dataSource={data}>
-      {columns.map((column) => (
-        <Column title={column.title} dataIndex={column.dataIndex} key={column.key} />
+    <TableContainer>
+      <TableHeader>
+        {itemsHeader.map((item) => (
+          <TableHeaderData key={item}>{item}</TableHeaderData>
+        ))}
+      </TableHeader>
+
+      {data.map((user) => (
+        <TableRow key={user.id}>
+          <TableRowData>{user.id}</TableRowData>
+          <TableRowData>{user.name}</TableRowData>
+          <TableRowData>{user.username}</TableRowData>
+          <TableRowData>{user.email}</TableRowData>
+          <TableRowData>{user.address?.city}</TableRowData>
+
+          <TableRowData>
+            <CustomButton onClick={() => handleEdit(user.id as number)}>Edit</CustomButton>
+            <CustomButton color="red" onClick={() => handleDelete(user.id as number)}>
+              Delete
+            </CustomButton>
+          </TableRowData>
+        </TableRow>
       ))}
-      <Column title="City" render={(record: User) => record.address?.city} />
-      <Column
-        title="Edit"
-        render={(record: User) => (
-          <Button type="primary" color="red" onClick={()=>handleEdit(record?.id as number)}>
-            Edit
-          </Button>
-        )}
-      />
-      <Column
-        title="Delete"
-        render={(record: User) => (
-          <Button type="primary" danger onClick={() => handleDelete(record?.id as number)}>
-            Delete
-          </Button>
-        )}
-      />
-    </Table>
+    </TableContainer>
   );
 };
 
