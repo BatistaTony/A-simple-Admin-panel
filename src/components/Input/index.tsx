@@ -1,8 +1,7 @@
-import React, { ChangeEventHandler,  useRef } from 'react';
+import React, { ChangeEventHandler} from 'react';
 import { Container } from './styles';
 
 export interface InputProps extends React.HTMLProps<HTMLInputElement> {
-  // if its true then it will be width of 100%
   fullWidth?: boolean;
   error?: boolean;
   label?: string;

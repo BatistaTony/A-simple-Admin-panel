@@ -8,7 +8,7 @@ import {
 } from './styles';
 import { User } from '../../types/user';
 import { useEffect, useState } from 'react';
-import { sortArrayByUserName } from '../../helpers';
+import { sortArrayByUserName } from '../../helpers/helper';
 
 interface CustomTableProps {
   data: User[];

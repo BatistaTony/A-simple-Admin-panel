@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store';
 import { actionCreateNewUser, actionUpdateUser } from '../../store/reducers/users';
 import { CustomForm, FormButton } from './styles';
-import { validateEmail } from '../../helpers';
+import { validateEmail } from '../../helpers/helper';
 import CustomInput from '../../components/Input';
 
 interface CreateAndUpdateProps {
