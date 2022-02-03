@@ -1,34 +1,33 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import 'antd/dist/antd.min.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import Home from './pages/home';
 import CreateAndUpdate from './pages/CreateAndUpdate';
-import { useDispatch, useSelector } from 'react-redux';
 import { getUsers, resetUsers } from './store/reducers/users';
 import { RootState } from './store';
 
-const App = () => {
+function App() {
   const dashboard = useSelector((state: RootState) => state.dashboard);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-
-  useEffect(()=> {
+  useEffect(() => {
     if (typeof dashboard === 'undefined') {
       dispatch(resetUsers());
     }
-    dispatch(getUsers())
-  }, [])
+    dispatch(getUsers());
+  }, []);
 
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/edit" element={<CreateAndUpdate  type='edit' />} />
+        <Route path="/edit" element={<CreateAndUpdate type="edit" />} />
         <Route path="/create" element={<CreateAndUpdate type="create" />} />
       </Routes>
     </BrowserRouter>
   );
-};
+}
 
 export default App;
