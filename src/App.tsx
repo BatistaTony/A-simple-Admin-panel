@@ -17,7 +17,8 @@ function App() {
       dispatch(resetUsers());
     }
     dispatch(getUsers());
-  }); 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <BrowserRouter>
