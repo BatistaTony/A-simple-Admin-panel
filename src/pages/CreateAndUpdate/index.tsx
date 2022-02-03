@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import PageLayout from '../../Layout';
-import { Form, Input, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store';
 import { actionCreateNewUser, actionUpdateUser } from '../../store/reducers/users';
+import { CustomForm, FormButton } from './styles';
+import { validateEmail } from '../../helpers';
+import CustomInput from '../../components/Input';
 
 interface CreateAndUpdateProps {
   type: 'create' | 'edit';
@@ -16,6 +18,11 @@ interface FormDataType {
 }
 
 const CreateAndUpdate = ({ type }: CreateAndUpdateProps) => {
+  const [userState, setUserState] = useState<FormDataType>({
+    name: '',
+    email: ''
+  });
+  const [errorMsg, setErrorMsg] = useState<string>('');
   const { flashUser, users } = useSelector((state: RootState) => state.dashboard);
   const dispatch = useDispatch();
   let navigate = useNavigate();
@@ -24,6 +31,17 @@ const CreateAndUpdate = ({ type }: CreateAndUpdateProps) => {
 
   const userFound = isEditing ? users.find((user) => user.id === flashUser) : null;
 
+  useEffect(() => {
+    if (type === 'edit') {
+      setUserState({
+        name: userFound?.name as string,
+        email: userFound?.email as string
+      });
+    }
+
+    return;
+  }, [type, userFound?.email, userFound?.name]);
+
   const create = (data: FormDataType) => {
     dispatch(
       actionCreateNewUser({
@@ -31,7 +49,7 @@ const CreateAndUpdate = ({ type }: CreateAndUpdateProps) => {
         address: {
           city: ''
         },
-        username: `@${data.name.replace(" ","_")}`
+        username: `@${data.name.replace(' ', '_')}`
       })
     );
     navigate('/');
@@ -42,59 +60,65 @@ const CreateAndUpdate = ({ type }: CreateAndUpdateProps) => {
     navigate('/');
   };
 
-  const onFinish = (records: any) => {
-    if (type === 'create') {
-      create(records);
-    }
-
-    if (type === 'edit') {
-      update(records);
+  const handleValidationForm = () => {
+    if (userState.email === '' || userState.name === '') {
+      setErrorMsg('*All the fields are required*');
+      return false;
+    } else if (!validateEmail(userState.email)) {
+      setErrorMsg('*Email is invalid*');
+      return false;
+    } else {
+      return true;
     }
   };
-  const onFinishFailed = () => {};
+
+  const onFinish = (e: FormEvent) => {
+    e.preventDefault();
+    if (handleValidationForm()) {
+      if (type === 'create') {
+        create(userState);
+      }
+
+      if (type === 'edit') {
+        update(userState);
+      }
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    e.preventDefault();
+    setErrorMsg('');
+    setUserState({
+      ...userState,
+      [e.target.name]: e.target.value
+    });
+  };
 
   return (
     <PageLayout title={isEditing ? 'Edit user' : 'Create User'}>
-      <Form
-        name="create-user"
-        layout="vertical"
-        labelCol={{ span: 10 }}
-        wrapperCol={{ span: 16 }}
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off">
-        <Form.Item
-          label="Name"
-          name="name"
-          initialValue={isEditing ? userFound?.name : null}
-          rules={[{ required: true, message: 'Please input your user name!' }]}>
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label="Email"
-          name="email"
-          initialValue={isEditing ? userFound?.email : null}
-          rules={[
-            { required: true, message: 'Please input your email!' },
-            { type: 'email', message: 'email has to be valid' }
-          ]}>
-          <Input />
-        </Form.Item>
-
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button
-            style={{ background: 'orange', marginRight: '20px' }}
-            type="primary"
-            onClick={() => navigate('/')}>
+      <CustomForm>
+        <form onSubmit={onFinish}>
+          <CustomInput
+            placeholder="name"
+            type="text"
+            value={userState.name}
+            name="name"
+            onChange={handleChange}
+          />
+          <CustomInput
+            placeholder="email"
+            type="text"
+            value={userState.email}
+            name="email"
+            onChange={handleChange}
+          />
+          {!!errorMsg && <p className="error_msg">{errorMsg}</p>}
+          <FormButton bg="#c7acac" onClick={() => navigate('/')}>
             cancel
-          </Button>
-          <Button type="primary" htmlType="submit">
-            {isEditing ? 'Update' : 'Create'}
-          </Button>
-        </Form.Item>
-      </Form>
+          </FormButton>
+          <FormButton bg="#00b4d8">{type === 'edit' ? 'update' : 'create'}</FormButton>
+        </form>
+      </CustomForm>
     </PageLayout>
   );
 };

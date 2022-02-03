@@ -1,6 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Dispatch } from 'react';
-import { createUserFromDb, deleteUserFromDb, getAllUsersFromDb, updateUserFromDb } from '../../services/users';
+import {
+  createUserFromDb,
+  deleteUserFromDb,
+  getAllUsersFromDb,
+  updateUserFromDb
+} from '../../services/users';
 import { User } from '../../types/user';
 
 interface DashboardSliceType {
@@ -36,13 +41,17 @@ const dashboardSliceState = createSlice({
     createNewUser(state, action: PayloadAction<User>) {
       const user = action.payload;
 
-      const newId = (state.users[state.users.length - 1].id as number) + 1;
-      user.id = newId;
-      state.users.push(user);
+      if (state.users.length) {
+        const newId = (state.users[state.users.length - 1].id as number) + 1;
+        user.id = newId;
+        state.users.push(user);
+      } else {
+        user.id = 1;
+        state.users.push(user);
+      }
     },
     updateUser(state, action: PayloadAction<User>) {
       let userInfo = action.payload;
-
 
       let oldState = state.users;
       let userIndex = oldState.findIndex((user) => user.id === userInfo.id);
@@ -78,20 +87,18 @@ export const actionCreateNewUser = (user: User) => {
   };
 };
 
+export const actionUpdateUser = (user: User) => {
+  return async (dispatch: Dispatch<any>) => {
+    const data = await updateUserFromDb(user);
+    dispatch(updateUser(data));
+  };
+};
 
-export const actionUpdateUser = (user: User)=> {
-  return async (dispatch: Dispatch<any>)=> {
-    const data  =await updateUserFromDb(user)
-    dispatch(updateUser(data))
-  }
-}
-
-
-export const actionDeleteUser = (id: number)=> {
-  return async (dispatch: Dispatch<any>)=> {
-   await deleteUserFromDb(id)
-    dispatch(deleteUser(id))
-  }
-}
+export const actionDeleteUser = (id: number) => {
+  return async (dispatch: Dispatch<any>) => {
+    await deleteUserFromDb(id);
+    dispatch(deleteUser(id));
+  };
+};
 
 export default dashboardSliceState.reducer;
